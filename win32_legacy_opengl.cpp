@@ -37,7 +37,7 @@ LRESULT CALLBACK wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	LRESULT result = 0;
 	switch (msg)
 	{
-		case WM_CREATE:
+		case WM_CREATE: // 0
 		{
 			g_hdc = GetDC(hwnd);
 
@@ -71,14 +71,14 @@ LRESULT CALLBACK wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 			}
 		} break;
 		
-		case WM_PAINT:
+		case WM_PAINT: // 0
 		{
 			PAINTSTRUCT ps;
 			BeginPaint(hwnd, &ps);
 			EndPaint(hwnd, &ps);
 		} break;
 		
-		case WM_CLOSE:
+		case WM_CLOSE: // 0
 		{
 			if (g_hglrc)
 			{
