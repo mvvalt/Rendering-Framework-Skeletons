@@ -150,7 +150,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR lpcmdline, int)
 
 			ShowWindow(hwnd, SW_SHOW);
 			UpdateWindow(hwnd);
-			set_vsync(1);
+			set_vsync(0); // Turn vsync off
 
 			while (g_running)
 			{
