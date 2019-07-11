@@ -6,4 +6,4 @@ OpenGL headers can be obtained from https://www.khronos.org/registry/OpenGL/inde
 
 ## Software rendering
 ### win32_legacy_opengl.cpp
-We only want to display our pixels on the screen, so opengl version 1.1 is (almost) good enough. We also load the wglSwapInterval extension because we really don't want vsync when we benchmark our rendering.
+I only want to display pixels on the screen, so opengl version 1.1 is (almost) good enough. I also load the wglSwapInterval extension because we really don't want vsync when we benchmark our rendering.
