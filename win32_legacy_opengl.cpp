@@ -8,8 +8,6 @@ bool g_running = true;
 HDC g_hdc = {};
 HGLRC g_hglrc = {};
 LARGE_INTEGER g_performance_frequency = {};
-PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = NULL;
-PFNWGLGETSWAPINTERVALEXTPROC wglGetSwapIntervalEXT = NULL;
 
 
 float elapsed_time(LARGE_INTEGER start, LARGE_INTEGER end)
@@ -18,16 +16,19 @@ float elapsed_time(LARGE_INTEGER start, LARGE_INTEGER end)
 }
 
 
-// https://stackoverflow.com/questions/589064/how-to-enable-vertical-sync-in-opengl/589232
-bool wgl_extension_supported(const char *extension_name)
+// A more robust program would load individual extensions and keep them on hand,
+// but vsync is not a critical operation and we can just get a handle to the
+// function each time we want to use it.
+// https://stackoverflow.com/questions/34063022/wglext-extension-not-installed-in-opengl-context
+void set_vsync(int interval)
 {
-	PFNWGLGETEXTENSIONSSTRINGEXTPROC _wglGetExtensionsStringEXT = NULL;
-	_wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)wglGetProcAddress("wglGetExtensionsStringEXT");
-	if (strstr(_wglGetExtensionsStringEXT(), extension_name) == NULL)
+	typedef BOOL(APIENTRY *PFNWGLSWAPINTERVALPROC)(int);
+	PFNWGLSWAPINTERVALPROC wglSwapIntervalEXT = 0;
+	wglSwapIntervalEXT = (PFNWGLSWAPINTERVALPROC)wglGetProcAddress("wglSwapIntervalEXT");
+	if (wglSwapIntervalEXT)
 	{
-		return false;
+		wglSwapIntervalEXT(interval);
 	}
-	return true;
 }
 
 
@@ -58,13 +59,6 @@ LRESULT CALLBACK wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 				{
 					g_hglrc = wglCreateContext(g_hdc);
 					wglMakeCurrent(g_hdc, g_hglrc);
-
-					// Load the extensions we want
-					if (wgl_extension_supported("WGL_EXT_swap_control"))
-					{
-						wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
-						wglGetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC)wglGetProcAddress("wglGetSwapIntervalEXT");
-					}
 				}
 				else
 				{
@@ -136,9 +130,8 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR lpcmdline, int)
 		HWND hwnd = CreateWindowEx(0, "wndclass", "Demo", style, CW_USEDEFAULT, CW_USEDEFAULT, window_rect.right - window_rect.left, window_rect.bottom - window_rect.top, NULL, NULL, hinstance, NULL);
 		if (hwnd)
 		{
-    
-    
-			// @TODO: Initialize framework here
+			// @TODO: Framework initialization
+			// renderer_initialize(window_width, window_height);
 			
 
 			LARGE_INTEGER update_timer_start;
@@ -151,14 +144,13 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR lpcmdline, int)
 			QueryPerformanceCounter(&update_timer_start);
 			QueryPerformanceCounter(&per_second_timer_start);
 
-
-			// @TODO: Application initialization
+			// @TODO: Initialization
 			// application_initialize(window_width, window_height);
 
 
 			ShowWindow(hwnd, SW_SHOW);
 			UpdateWindow(hwnd);
-			wglSwapIntervalEXT(0); // Turn off vsync
+			set_vsync(1);
 
 			while (g_running)
 			{
@@ -179,7 +171,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR lpcmdline, int)
 					++update_counter;
 					update_accumulator -= update_interval;
 
-					// @TODO: Application update
+					// @TODO: Update
 					// application_update(update_interval);
 				}
 				update_timer_start = update_timer_now;
@@ -190,13 +182,13 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR lpcmdline, int)
 				glClearColor(0.5f, 0.5f, 0.1f, 1.0f);
 				glClear(GL_COLOR_BUFFER_BIT);
 
-				// @TODO: Application rendering
+				// @TODO: Render
 				// application_render();
-        
-				// @TODO: Get the pixel buffer to display on the screen
-				// unsigned int *buffer = application_get_buffer();
+				
+				// @TODO: Get the pixels that we want to display on the screen
+				// unsigned int *buffer = renderer_get_buffer();
 				// glDrawPixels(window_width, window_height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-        
+				
 				SwapBuffers(g_hdc);
 				++render_counter;
 
@@ -216,7 +208,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR lpcmdline, int)
 				}
 			}
 
-			// @TODO: Application shutdown
+			// @TODO: Shutdown
 			// application_shutdown();
 		}
 	}
