@@ -178,7 +178,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR lpcmdline, int)
 
 
 				// Render
-				glViewport(0, 0, 640, 360);
+				glViewport(0, 0, window_width, window_height);
 				glClearColor(0.5f, 0.5f, 0.1f, 1.0f);
 				glClear(GL_COLOR_BUFFER_BIT);
 
