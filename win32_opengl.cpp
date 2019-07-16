@@ -1,3 +1,4 @@
+// Big thanks to https://mariuszbartosik.com/opengl-4-x-initialization-in-windows-without-a-framework/
 #include <Windows.h>
 
 #include <glad/glad.h>
