@@ -159,6 +159,11 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR lpcmdline, int)
 				{	
 					TranslateMessage(&msg);
 					DispatchMessage(&msg);
+					
+					if (msg.message == WM_QUIT)
+					{
+						g_running = false;
+					}
 				}
 
 
