@@ -133,7 +133,7 @@ bool create_window(HINSTANCE hinstance, ConfigOptions &config, WindowData &wnd_d
 				WGL_ALPHA_BITS_ARB, 8,
 				WGL_DEPTH_BITS_ARB, 24,
 				WGL_STENCIL_BITS_ARB, 8,
-				WGL_SAMPLE_BUFFERS_ARB, 1,						// multisampling enables
+				WGL_SAMPLE_BUFFERS_ARB, 1,			// multisampling enabled
 				WGL_SAMPLES_ARB, config.multisample_samples,	// multisampling samples (e.g. 4x, 8x)
 				0
 			};
