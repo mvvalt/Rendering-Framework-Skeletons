@@ -89,7 +89,7 @@ LRESULT CALLBACK wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 				ReleaseDC(hwnd, g_hdc);
 			}
 			DestroyWindow(hwnd);
-			g_running = false;
+			PostQuitMessage(0);
 		} break;
 
 		default:
