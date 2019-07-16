@@ -2,7 +2,7 @@
 These are a set of application skeletons that I use for software renderers, game demos, etc.
 
 ### Third-party
-OpenGL headers can be obtained from https://www.khronos.org/registry/OpenGL/index_gl.php
+OpenGL headers can be obtained from https://www.khronos.org/registry/OpenGL/index_gl.php 
 GLAD can be obtained from https://github.com/Dav1dde/glad
 
 ## Software rendering
