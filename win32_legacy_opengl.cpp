@@ -49,7 +49,7 @@ LRESULT CALLBACK wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 			pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
 			pfd.dwLayerMask = PFD_MAIN_PLANE;
 			pfd.iPixelType = PFD_TYPE_RGBA;
-			pfd.cColorBits = 32;
+			pfd.cColorBits = 24;
 			pfd.cAlphaBits = 8;
 
 			pixelformat = ChoosePixelFormat(g_hdc, &pfd);
