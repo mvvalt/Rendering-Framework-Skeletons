@@ -6,14 +6,11 @@ OpenGL headers can be obtained from https://www.khronos.org/registry/OpenGL/inde
 
 glad can be obtained from https://github.com/Dav1dde/glad
 
-## Software rendering
-
-### win32_gdi.cpp
+## win32_gdi.cpp
 Display a pixel buffer on the screen using StretchDIBits().
 
-### win32_legacy_opengl.cpp
+## win32_legacy_opengl.cpp
 I only want to display pixels on the screen, so opengl version 1.1 is (almost) good enough. I also load the wglSwapInterval extension because we really don't want vsync when we benchmark our rendering.
 
-## OpenGL
-### win32_opengl.cpp
+## win32_opengl.cpp
 This uses glad to create a modern opengl window.
