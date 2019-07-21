@@ -155,7 +155,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR lpcmdline, int)
 			while (g_running)
 			{
 				MSG msg;
-				while (PeekMessage(&msg, hwnd, 0, 0, PM_REMOVE))
+				while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 				{	
 					TranslateMessage(&msg);
 					DispatchMessage(&msg);
