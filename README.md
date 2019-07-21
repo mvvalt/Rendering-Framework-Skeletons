@@ -10,7 +10,7 @@ glad can be obtained from https://github.com/Dav1dde/glad
 Display a pixel buffer on the screen using StretchDIBits().
 
 ## win32_legacy_opengl.cpp
-I only want to display pixels on the screen, so opengl version 1.1 is (almost) good enough. I also load the wglSwapInterval extension because we really don't want vsync when we benchmark our rendering.
+I only want to display pixels on the screen, so opengl version 1.1 is (almost) good enough. I also load the wglSwapInterval() function to toggle vsync.
 
 ## win32_opengl.cpp
 This uses glad to create a modern opengl window.
