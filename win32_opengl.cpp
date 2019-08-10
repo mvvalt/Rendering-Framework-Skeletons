@@ -73,7 +73,7 @@ void toggle_window(bool fullscreen)
 	else
 	{
 		DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_VISIBLE; // No min/max buttons
-		//style |= WS_THICKFRAME; // Resizing the window manually is allowed
+		//style |= WS_THICKFRAME; // Resizing the window manually
 
 		SetWindowLongPtr(g_window_data.hwnd, GWL_STYLE, style);
 		RECT window_rect = { 0, 0, g_config.display_width, g_config.display_height };
