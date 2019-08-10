@@ -1,3 +1,6 @@
+/*
+@TODO: Fix AdjustWindowRectEx (see win32_opengl.cpp)
+*/
 #include <Windows.h>
 
 bool g_running = true;
