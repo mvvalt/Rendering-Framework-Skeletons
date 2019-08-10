@@ -35,12 +35,11 @@ struct ConfigOptions
 };
 
 
-WindowData g_window_data = {};
 ConfigOptions g_config = {};
-LARGE_INTEGER g_performance_frequency = {};
-
-
 bool g_running = true;
+
+static WindowData window_data = {};
+static LARGE_INTEGER performance_frequency = {};
 
 
 // @NOTE: This is not a critical operation, so we just get the function pointer on demand.
@@ -67,26 +66,26 @@ void toggle_window(bool fullscreen)
 {
 	if (fullscreen)
 	{
-		SetWindowLongPtr(g_window_data.hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
-		MoveWindow(g_window_data.hwnd, 0, 0, g_config.monitor_width, g_config.monitor_height, FALSE);
+		SetWindowLongPtr(window_data.hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
+		MoveWindow(window_data.hwnd, 0, 0, g_config.monitor_width, g_config.monitor_height, FALSE);
 	}
 	else
 	{
 		DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_VISIBLE; // No min/max buttons
 		//style |= WS_THICKFRAME; // Resizing the window manually
 
-		SetWindowLongPtr(g_window_data.hwnd, GWL_STYLE, style);
+		SetWindowLongPtr(window_data.hwnd, GWL_STYLE, style);
 		RECT window_rect = { 0, 0, g_config.display_width, g_config.display_height };
 		AdjustWindowRectEx(&window_rect, style, FALSE, 0);
 		int wx = (g_config.monitor_width - (window_rect.right - window_rect.left)) / 2;
 		int wy = (g_config.monitor_height - (window_rect.bottom - window_rect.top)) / 2;
-		MoveWindow(g_window_data.hwnd, wx, wy, window_rect.right - window_rect.left, window_rect.bottom - window_rect.top, TRUE);
+		MoveWindow(window_data.hwnd, wx, wy, window_rect.right - window_rect.left, window_rect.bottom - window_rect.top, TRUE);
 		InvalidateRect(NULL, NULL, TRUE); // Necessary to redraw the desktop
 	}
 
 	// This fixes a strange issue where the taskbar icon will not show up for this window
 	// when using Alt+Enter
-	SetActiveWindow(g_window_data.hwnd);
+	SetActiveWindow(window_data.hwnd);
 
 	// @TODO: notify renderer
 }
@@ -109,7 +108,7 @@ void APIENTRY opengl_error(GLenum source, GLenum type, GLuint id, GLenum severit
 	id;
 	severity;
 	length;
-	//message;
+	message;
 	user_param;
 
 	switch (severity)
@@ -135,7 +134,7 @@ void APIENTRY opengl_error(GLenum source, GLenum type, GLuint id, GLenum severit
 
 float elapsed_time(LARGE_INTEGER start, LARGE_INTEGER end)
 {
-	return (float)((end.QuadPart - start.QuadPart) / (double)g_performance_frequency.QuadPart);
+	return (float)((end.QuadPart - start.QuadPart) / (double)performance_frequency.QuadPart);
 }
 
 
@@ -444,7 +443,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR lpcmdline, int)
 	lpcmdline;
 
 		
-	if (initialize_window(hinstance, g_window_data))
+	if (initialize_window(hinstance, window_data))
 	{
 #ifdef GD_LOGTOCONSOLE
 		AllocConsole();
@@ -455,10 +454,10 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR lpcmdline, int)
 		
 
 		// @TEMP: Show us what version of opengl we're using
-		SetWindowText(g_window_data.hwnd, (LPCSTR)glGetString(GL_VERSION));
+		SetWindowText(window_data.hwnd, (LPCSTR)glGetString(GL_VERSION));
 
 
-		QueryPerformanceFrequency(&g_performance_frequency);
+		QueryPerformanceFrequency(&performance_frequency);
 
 		LARGE_INTEGER update_timer_start;
 		int update_counter = 0;
@@ -506,7 +505,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR lpcmdline, int)
 			glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			SwapBuffers(g_window_data.hdc);
+			SwapBuffers(window_data.hdc);
 			++render_counter;
 
 
@@ -517,7 +516,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR lpcmdline, int)
 			{
 				char buf[0x100];
 				wsprintf(buf, "UPS: %d, FPS: %d", update_counter, render_counter);
-				SetWindowText(g_window_data.hwnd, buf);
+				SetWindowText(window_data.hwnd, buf);
 
 				update_counter = 0;
 				render_counter = 0;
