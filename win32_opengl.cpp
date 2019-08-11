@@ -188,6 +188,12 @@ LRESULT CALLBACK window_procedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpa
 				}
 			}
 		} break;
+			
+		// @NOTE: We need to capture these to prevent beeping from WM_SYSKEYDOWN
+		case WM_SYSKEYUP: // 0
+		{} break;
+		case WM_SYSCHAR: // 0
+		{} break;
 
 		case WM_KEYDOWN: // 0
 		{
