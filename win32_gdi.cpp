@@ -1,15 +1,12 @@
-/*
-@TODO: Fix AdjustWindowRectEx (see win32_opengl.cpp)
-*/
 #include <Windows.h>
 
-bool g_running = true;
-LARGE_INTEGER g_performance_frequency = {};
+static bool running = true;
+static LARGE_INTEGER performance_frequency = {};
 
 
-float elapsed_time(LARGE_INTEGER start, LARGE_INTEGER end)
+double elapsed_time(LARGE_INTEGER start, LARGE_INTEGER end)
 {
-	return (float)((end.QuadPart - start.QuadPart) / (double)g_performance_frequency.QuadPart);
+	return ((end.QuadPart - start.QuadPart) / (double)performance_frequency.QuadPart);
 }
 
 
@@ -48,13 +45,13 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR lpcmdline, int)
 {
 	lpcmdline;
 
-	int window_width = 1280;
-	int window_height = 720;
+	int window_width = 256;
+	int window_height = 240;
 
 	const int source_width = 256;
 	const int source_height = 240;
 
-	float update_interval = 1.0f / 60.0f;
+	double update_interval = 1.0 / 60.0;
 
 
 	WNDCLASSEX wc = {};
@@ -69,11 +66,13 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR lpcmdline, int)
 	wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
 
 	if (RegisterClassEx(&wc))
-	{
-		DWORD style = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+	{	
+		DWORD style = WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU | WS_VISIBLE;
 		RECT window_rect = { 0, 0, window_width, window_height };
 		AdjustWindowRectEx(&window_rect, style, FALSE, 0);
-		HWND hwnd = CreateWindowEx(0, "wndclass", "Demo", style, CW_USEDEFAULT, CW_USEDEFAULT, window_rect.right - window_rect.left, window_rect.bottom - window_rect.top, NULL, NULL, hinstance, NULL);
+		int window_x = (GetSystemMetrics(SM_CXSCREEN) - (window_rect.right - window_rect.left)) / 2;
+		int window_y = (GetSystemMetrics(SM_CYSCREEN) - (window_rect.bottom - window_rect.top)) / 2;
+		HWND hwnd = CreateWindowEx(0, "wndclass", "Demo", style, window_x, window_y, window_rect.right - window_rect.left, window_rect.bottom - window_rect.top, NULL, NULL, hinstance, NULL);
 		if (hwnd)
 		{
 			BITMAPINFO bitmapinfo = {};
@@ -85,7 +84,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR lpcmdline, int)
 			bitmapinfo.bmiHeader.biCompression = BI_RGB;
 
 			HDC hdc = GetDC(hwnd);
-			
+
 
 			// @TODO: Framework initialization
 			// renderer_initialize(window_width, window_height);
@@ -93,11 +92,11 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR lpcmdline, int)
 
 			LARGE_INTEGER update_timer_start;
 			int update_counter = 0;
-			float update_accumulator = 0.0f;
+			double update_accumulator = 0.0f;
 			int render_counter = 0;
 			LARGE_INTEGER per_second_timer_start;
 
-			QueryPerformanceFrequency(&g_performance_frequency);
+			QueryPerformanceFrequency(&performance_frequency);
 			QueryPerformanceCounter(&update_timer_start);
 			QueryPerformanceCounter(&per_second_timer_start);
 
@@ -108,7 +107,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR lpcmdline, int)
 			ShowWindow(hwnd, SW_SHOW);
 			UpdateWindow(hwnd);
 
-			while (g_running)
+			while (running)
 			{
 				MSG msg;
 				while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
@@ -118,7 +117,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR lpcmdline, int)
 
 					if (msg.message == WM_QUIT)
 					{
-						g_running = false;
+						running = false;
 					}
 				}
 
@@ -145,17 +144,17 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR lpcmdline, int)
 
 				// @TODO: Get the pixels that we want to display on the screen
 				// unsigned int *pixels = get_pixels();
-				UINT32 pixels[source_width * source_height];
-				memset(pixels, 0x55, source_width * source_height * sizeof(UINT32));
+				UINT32 pixels[source_width * source_height]; // @TEMP
+				memset(pixels, 0x55, source_width * source_height * sizeof(UINT32)); // @TEMP
 				StretchDIBits(hdc, 0, 0, window_width, window_height, 0, 0, source_width, source_height, pixels, &bitmapinfo, DIB_RGB_COLORS, SRCCOPY);
-								
+
 				++render_counter;
 
 
 				// Per second information
 				LARGE_INTEGER per_second_timer_now;
 				QueryPerformanceCounter(&per_second_timer_now);
-				if (elapsed_time(per_second_timer_start, per_second_timer_now) >= 1.0f)
+				if (elapsed_time(per_second_timer_start, per_second_timer_now) >= 1.0)
 				{
 					char buf[0x100];
 					wsprintf(buf, "UPS: %d, FPS: %d", update_counter, render_counter);
