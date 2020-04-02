@@ -15,5 +15,5 @@ I only want to display pixels on the screen, so opengl version 1.1 is (almost) g
 ## win32_opengl.cpp
 This uses glad to create a modern opengl window.
 
-## sdl2_main.cpp
+## sdl2_native.cpp
 A basic game/emulation loop implemented in SDL2.
