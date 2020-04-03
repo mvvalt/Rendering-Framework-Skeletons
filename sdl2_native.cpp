@@ -10,7 +10,7 @@ struct Input
 };
 
 void Stub_Update(Input& input, float delta_time);
-Uint32* Stub_Render(int& output_width, int& output_height);
+unsigned int* Stub_Render(int& output_width, int& output_height);
 //-----------------------------------------------------------------------------
 
 
@@ -28,7 +28,7 @@ void Stub_Update(Input& input, float delta_time)
 
 // output_width/output_height are the dimensions of the framebuffer that gets resized to fit the application window.
 // Returns a pointer to the pixel data (of size output_width * output_height) that will cover the application window.
-Uint32* Stub_Render(int& output_width, int& output_height)
+unsigned int* Stub_Render(int& output_width, int& output_height)
 {
 	static Uint32* buf;
 	if (buf == nullptr)
