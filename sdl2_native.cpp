@@ -1,15 +1,22 @@
 #include <SDL.h>
 
 
+//-----------------------------------------------------------------------------
+// @TODO: Place these in a header file included from this source file, with the
+// prototypes renamed appropriately
 struct Input
 {
 	// @TODO: mouse, keyboard
 };
 
+void Stub_Update(Input& input, float delta_time);
+Uint32* Stub_Render(int& output_width, int& output_height);
+//-----------------------------------------------------------------------------
+
 
 //-----------------------------------------------------------------------------
-// Replace this section with your own code, and rename the function calls to
-// the Stub_*() functions inside of main().
+// @TODO: Replace this section with your own code, and rename the function
+// calls to the Stub_*() functions inside of main().
 int stub_framebuffer_width = 800;
 int stub_framebuffer_height = 450;
 
